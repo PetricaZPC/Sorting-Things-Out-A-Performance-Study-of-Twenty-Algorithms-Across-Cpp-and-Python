@@ -1,54 +1,54 @@
-# 📊 Sorting Things Out: Studiul Performanței a 20 de Algoritmi în C++ și Python
+# 📊 Sorting Things Out: A Performance Study of 20 Algorithms in C++ and Python
 
 <br>
 
 <p align="center">
-  O analiză experimentală a 20 de algoritmi de sortare, explorând raportul dintre complexitatea teoretică și performanța reală, implementați de la zero în C++17 și Python 3.11.
+  An experimental analysis of 20 sorting algorithms, exploring the gap between theoretical complexity and real-world performance. Implemented from scratch in C++17 and Python 3.11.
 </p>
 
 ---
 
-## 💡 Motivația Proiectului: De ce sortarea?
+## 💡 The Motivation: Why Sorting?
 
-Cu mult înainte ca primul computer să fie pornit, omenirea a avut o obsesie pentru ordine. De la scribii mesopotamieni care organizau tăblițele de lut pentru taxe, până la bibliotecarii din Alexandria, capacitatea de a găsi informația rapid a fost mereu o formă de putere.
+Long before the first computer was ever switched on, humanity had a deep obsession with order. From ancient Mesopotamian scribes organizing clay tax tablets to librarians in the Library of Alexandria, the ability to find information quickly has always been a form of power.
 
-**Motivul acestui proiect:** În programarea modernă, sortarea este adesea tratată ca o "cutie neagră" (un simplu `.sort()`). Am creat acest studiu pentru a demonstra că alegerea algoritmului nu este doar o discuție academică, ci o decizie de inginerie care influențează costurile serverelor, timpul de răspuns și experiența utilizatorului. Am vrut să văd unde se rupe bariera limbajului (C++ vs Python) și unde contează exclusiv matematica din spatele codului.
-
----
-
-## 📖 Povestea din spatele algoritmilor
-
-Proiectul nu este doar o înșiruire de cod, ci o explorare a unor strategii fundamentale de rezolvare a problemelor, ilustrate prin analogii din lumea reală:
-
-* **Mașina care a sortat o națiune (1890):** Herman Hollerith a procesat recensământul SUA în 2 ani (față de 8 ani anterior) nu inventând un numărător mai rapid, ci un sistem de sortare pe cartele perforate. Compania lui a devenit ulterior **IBM**.
-* **Analogia Rețetei:** Un algoritm este ca o rețetă de prăjituri. Ordinea contează, precizia contează, iar rezultatul trebuie să fie predictibil indiferent de cine "gătește" (CPU-ul).
-* **Poveștile Vizuale:** * **Bubble Sort** este ca o coadă la cinema unde oamenii își compară biletele doi câte doi.
-    * **Cocktail Shaker** este mișcarea unui barman care balansează shaker-ul pentru a așeza elementele la ambele capete.
-    * **Quick Sort** este ca un profesor care împarte clasa în funcție de o notă pivot.
+**The "Why" behind this project:** In modern programming, sorting is often treated as a black box (a simple `.sort()`). I created this study to demonstrate that choosing the right algorithm is not just an academic exercise—it is a critical engineering decision that directly impacts server costs, response times, and energy consumption. I wanted to see where the language barrier breaks (C++ vs. Python) and where the underlying math is the only thing that matters.
 
 ---
 
-## 🔬 Metodologie și Experiment
+## 📖 The Stories Behind the Code
 
-Am implementat **20 de algoritmi** organizați pe familii (Elementary, Gap-based, Divide-and-Conquer, Non-comparison și Exotic) pentru a măsura:
+This project isn't just about raw code; it's an exploration of fundamental problem-solving strategies, illustrated through real-world analogies:
 
-1.  **Timpul de execuție (Wall-clock runtime)**
-2.  **Consumul maxim de memorie (Peak memory usage)**
-3.  **Numărul de operații (Comparații și Swaps)**
-
-### Configurația Testelor:
-* **Scări de date:** De la $n=100$ la $n=1.000.000$.
-* **Distribuții:** Random (haos), Sorted (deja ordonat), Reverse Sorted (cel mai greu caz).
-* **Limbaje:** C++17 (compilat cu -O2) vs Python 3.11 (CPython).
+* **1890: The Machine That Sorted a Nation:** Herman Hollerith processed the US Census in under 2 years (down from 8) not by inventing a faster counter, but by inventing a punch-card *sorting* system. His company later became **IBM**.
+* **The Recipe Analogy:** An algorithm is just like a recipe. Order matters, precision matters, and the output must be predictable regardless of who (or what CPU) executes it.
+* **Visualizing the Sorts:** * *Bubble Sort* is like a cinema queue where an usher compares people two by two and swaps them if needed.
+  * *Cocktail Shaker Sort* is a bartender tilting a shaker back and forth so elements settle at both ends simultaneously.
+  * *Quick Sort* is a teacher splitting a class into two distinct groups based on a pivot grade.
 
 ---
 
-## 🚀 Rezultate și Concluzii Cheie
+## 🔬 Methodology and Experiment
 
-* **Bariera O(n log n):** Algoritmii de non-comparație (Counting Sort, Hash Sort) sunt de **5-100x mai rapizi** decât Quick Sort la volume mari de date, deoarece "trișează" matematica prin numărarea valorilor în loc de compararea lor.
-* **Alegerea bate Limbajul:** La $n \geq 100.000$, alegerea algoritmului devine mai importantă decât limbajul de programare. Un algoritm eficient în Python va bate un algoritm ineficient în C++.
-* **Zidul O(n²):** Algoritmi precum Insertion Sort devin complet inutilizabili peste $n=10.000$ în limbaje interpretate (Python), transformând conceptele teoretice în limitări fizice reale.
-* **Independența de Distribuție:** Heap Sort și Bitonic Sort sunt cei mai "imparțiali" algoritmi — nu le pasă dacă datele sunt deja sortate sau nu, oferind un timp constant.
+I implemented **20 algorithms** across 5 distinct families (Elementary, Gap-based, Divide-and-Conquer, Non-comparison, and Exotic) to measure:
+
+1. **Wall-clock runtime**
+2. **Peak memory usage**
+3. **Operation counts (Comparisons and Swaps)**
+
+### Testing Configuration:
+* **Scales:** From N = 100 to N = 1,000,000.
+* **Distributions:** Random (chaos), Already Sorted (best case), Reverse Sorted (the ultimate stress test).
+* **Languages:** C++17 (compiled with `-O2`) vs. Python 3.11 (CPython).
+
+---
+
+## 🚀 Key Results and Conclusions
+
+* **Bypassing the O(n log n) Barrier:** Non-comparison sorts (Counting Sort, Hash Sort) are **5x to 100x faster** than Quick Sort on large integer datasets because they "cheat" the math by counting values instead of directly comparing them.
+* **Algorithm > Language:** At N >= 100,000, algorithm choice heavily dominates the language choice. An efficient algorithm running in Python will easily outperform an inefficient one compiled in C++.
+* **The O(n²) Wall:** Algorithms like Insertion Sort become completely unusable beyond N = 10,000 in interpreted languages (Python), proving that theoretical complexities are hard physical limits, not just concepts.
+* **Distribution Independence:** Heap Sort and Bitonic Sort are the most "unbiased" algorithms—they don't care if the data is already sorted or completely reversed, offering highly predictable execution times.
 
 ---
 
@@ -56,9 +56,9 @@ Am implementat **20 de algoritmi** organizați pe familii (Elementary, Gap-based
 
 * **C++:** `g++ 12.3.0` (Flags: `-O2 -std=c++17`)
 * **Python:** CPython 3.11.4
-* **Analiză Memorie:** Valgrind Massif (C++) și `tracemalloc` (Python)
-* **Documentație:** LaTeX (format EasyChair)
+* **Memory Profiling:** Valgrind Massif (C++) & `tracemalloc` (Python)
+* **Documentation:** LaTeX (EasyChair format)
 
 ---
 
-> *"Sortarea este cea mai fundamentală operațiune în computere — și încă una dintre cele mai interesante."*
+> *"Sorting is the most fundamental operation in computing — and still one of the most interesting."*
