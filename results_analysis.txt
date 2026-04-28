@@ -1,0 +1,74 @@
+ALGORITHM PERFORMANCE SUMMARY
+================================================================================
+
+Median times (seconds) by size:
+
+Algorithm                     20          30          50         100        1000        5000       10000       50000      100000      500000     1000000
+--------------------------------------------------------------------------------------------------------------------------------------------------------
+bitonic_sort                226탎        231탎        302탎        478탎       4.81ms      54.79ms     118.86ms     608.88ms       1.34s       6.80s      15.36s
+bubble_sort                 207탎        232탎        253탎        448탎      29.08ms         ---         ---         ---         ---         ---         ---
+bucket_sort                 189탎        191탎        193탎        216탎        534탎       1.95ms       3.64ms      21.73ms      48.81ms     401.38ms       1.00s
+cocktail_shaker_sort        184탎        193탎        234탎        438탎      28.57ms     729.86ms         ---         ---         ---         ---         ---
+comb_sort                   199탎        201탎        202탎        228탎       1.16ms       7.10ms         ---         ---         ---         ---         ---
+counting_sort               278탎        296탎        276탎        147탎        238탎        610탎       1.07ms       5.31ms      10.81ms      78.74ms     170.38ms
+gnome_sort                  148탎        157탎        205탎        432탎      35.25ms         ---         ---         ---         ---         ---         ---
+hash_sort                   142탎        142탎        146탎        159탎        365탎       1.23ms       2.38ms      13.40ms      29.89ms     208.52ms     533.08ms
+heap_sort                   135탎        138탎        141탎        149탎        308탎       1.11ms       2.00ms      11.22ms      25.39ms     197.79ms     539.75ms
+insertion_sort              136탎        146탎        160탎        237탎      10.76ms     268.05ms       1.11s      28.16s       9.73s       1.53s       5.90s
+merge_sort                 2.46s        401탎        290탎        290탎       1.44ms       6.78ms      13.91ms     327.81ms     518.97ms       1.38s       2.75s
+odd_even_sort               180탎        166탎        200탎        368탎      26.37ms     637.33ms         ---         ---         ---         ---         ---
+pancake_sort                233탎        211탎        266탎        534탎      27.31ms         ---         ---         ---         ---         ---         ---
+pigeonhole_sort             223탎        200탎        162탎        204탎        272탎        570탎         ---         ---         ---         ---         ---
+quick_sort                  223탎        223탎        260탎        307탎       1.11ms       5.02ms       9.84ms     369.80ms     701.63ms       2.13s       4.24s
+
+
+DISTRIBUTION SENSITIVITY ANALYSIS
+================================================================================
+
+How performance changes by input distribution (size=10000):
+
+Algorithm             almost_sorted           flat    half_sorted         random        reverse         sorted
+--------------------------------------------------------------------------------------------------------------
+bitonic_sort               117.57ms       117.13ms       118.06ms       118.60ms       121.06ms       115.26ms
+bubble_sort                     ---            ---            ---            ---            ---            ---
+bucket_sort                  4.80ms         4.41ms         5.37ms         4.50ms         4.76ms         5.10ms
+cocktail_shaker_sort            ---            ---            ---            ---            ---            ---
+comb_sort                       ---            ---            ---            ---            ---            ---
+counting_sort                  425탎           707탎           740탎         1.05ms           427탎           206탎
+gnome_sort                      ---            ---            ---            ---            ---            ---
+hash_sort                    2.43ms           916탎         2.72ms         3.07ms         3.34ms         2.14ms
+heap_sort                    1.71ms         1.81ms         1.89ms         1.82ms         1.56ms         1.60ms
+insertion_sort              66.89ms         1.126s       934.83ms         1.177s         2.317s           912탎
+
+
+MEMORY USAGE ANALYSIS
+================================================================================
+
+Peak memory usage by algorithm (size=100000):
+
+Algorithm            Avg Memory (MB)      Min        Max       
+------------------------------------------------------------
+bitonic_sort                  49.40 MB       43.26 MB    57.07 MB
+bucket_sort                   52.20 MB       46.96 MB    57.94 MB
+counting_sort                 45.79 MB       39.63 MB    48.90 MB
+hash_sort                     47.77 MB       46.19 MB    50.88 MB
+heap_sort                     47.16 MB       45.86 MB    49.97 MB
+insertion_sort                59.64 MB       49.88 MB    80.58 MB
+merge_sort                    53.11 MB       43.27 MB    61.30 MB
+quick_sort                    89.91 MB       45.79 MB   126.14 MB
+
+
+ERROR ANALYSIS
+================================================================================
+
+Total tests: 4546
+Completed: 4444
+Timeouts: 86
+Errors: 16
+
+Timeouts occurred for:
+  insertion_sort at size 100000
+  insertion_sort at size 1000000
+  insertion_sort at size 500000
+  quick_sort at size 100000
+  quick_sort at size 1000000

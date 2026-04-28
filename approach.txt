@@ -1,0 +1,253 @@
+EXPERIMENTAL STUDY - SORTING ALGORITHMS COMPARISON
+==================================================
+
+WHY PYTHON AND C++?
+===================
+
+I chose to implement the algorithms in both languages (Python and C++)
+because I wanted to see how the same algorithm performs in different contexts.
+Python is interpreted, dynamically typed, and optimized for development speed.
+C++ is compiled, statically typed, and optimized for execution speed.
+
+The idea was: if the algorithms are the same conceptually, why would their
+performance be different? The answer is in the details. C++ forces you to think
+about memory, types, and data structures. Python abstracts that away.
+So I wanted to see how this reflects in practice.
+
+It's not just about "which one is faster". It's about how the language
+and coding approach affect performance. That's why I implemented things
+differently in each language - not identical copies.
+
+
+HOW DID I APPROACH OPTIMIZATION?
+=================================
+
+PYTHON (py_algorithms/)
+-----------------------
+In Python, I tried to leverage the fact that the language has powerful primitives
+and that some algorithms are more idiomatic than others.
+
+For basic algorithms (bubble sort, gnome sort), I kept implementations simple
+and straightforward - that's what Python is good at. No obscure tricks.
+
+For more complex algorithms (quick sort, merge sort), I used recursion
+and let Python handle the stack. I tried to minimize list copies -
+that's a major issue in Python.
+
+Smarter algorithms like Tim sort are implemented to take advantage of
+patterns in data - that's their strength anyway.
+
+For linked lists, I implemented a simple structure with nodes. It's slower
+than arrays in Python, but I want to see the difference.
+
+
+C++ (cpp_algorithms/)
+---------------------
+The strategy here is different. C++ gives you full control.
+
+I used vector<int> for storage, which is efficient.
+I avoided unnecessary pointers and improper data copies.
+
+For recursion (quick sort, merge sort), I was more careful about
+optimizations - C++ has tail call optimization in certain conditions,
+but we can't rely on it, so I wrote code that doesn't make major
+data copies.
+
+Bitonic sort is more natural in C++ - it's a comparison network,
+conceptually parallelizable, so I included it in C++.
+
+For bucket sort and pigeonhole sort, C++ with vectors is perfect
+- I create buckets and distribute efficiently.
+
+In C++, I didn't implement linked lists because... why? Arrays are clearly
+superior and wouldn't be a relevant test. I'm testing the language in its context.
+
+
+WHAT HAPPENS IN THE BENCHMARK?
+==============================
+
+The benchmark (benchmark.py) is the code that orchestrates all testing.
+Its role is simple: make each algorithm run on different datasets
+and measure what happens.
+
+For each algorithm (Python and C++, where they exist):
+- I test with different data sizes: 20, 30, 50, 100, 1000, 5000, 10000, 50000,
+  100000, 500000, 1000000, etc. Up to tens of millions for C++.
+
+- For each size, I test with 6 distributions:
+  * random - numbers/strings at random
+  * sorted - already sorted
+  * reverse - sorted in reverse
+  * almost_sorted - ~98% sorted with a few swaps
+  * half_sorted - first half sorted, second half random
+  * flat - only 8 unique values repeated (worst case for some algorithms)
+
+- With 3 element types: integers, floats, strings (in Python)
+  (C++ only does integers - sufficient to see behavior)
+
+- Two data structures: array and linked_list (in Python, C++ is array only)
+
+For each combination, I run the test multiple times (repetitions):
+- Small data: 1000 times (to get a good average)
+- Medium data: 10-100 times
+- Large data: 1-5 times (because they're slow)
+
+Why repetitions? So I don't depend on a single measurement which could be
+affected by other processes, cache, etc.
+
+
+MEASUREMENTS - WHAT DO I ANALYZE?
+=================================
+
+For each run, the benchmark collects:
+
+1. EXECUTION TIME (duration_seconds)
+   - How long it actually took (wall clock time)
+   - This is what the user experiences
+   - Affected by processes, context switching, etc.
+
+2. CPU TIME (cpu_time_seconds)
+   - How much time the process consumed doing actual work
+   - Excludes sleep/wait times
+   - More precise for pure algorithm comparisons
+
+3. MEMORY (memory_mb)
+   - How much memory the process used at peak
+   - Interesting for algorithms like merge sort which allocate extra space
+
+4. CPU USAGE % (cpu_usage_percent_avg)
+   - Average CPU usage while the algorithm ran
+   - Shows how "efficiently" CPU is utilized
+   - An algorithm can be slow but CPU-efficient
+
+5. RAM USAGE % (ram_usage_percent_avg)
+   - Average RAM from total available
+   - Shows system pressure
+
+6. STATUS
+   - "completed" - finished normally
+   - "timeout" - exceeded 2 minute limit
+   - "error" - crash
+
+Why measure so many things? Because I want to understand not just the speed,
+but also how the algorithm uses resources. A fast algorithm that consumes
+all memory or CPU isn't necessarily "good".
+
+
+WHAT DOES BUILD_CPP.PY DO?
+==========================
+
+C++ code needs to be compiled before you can run the executables.
+build_cpp.py automates this.
+
+The script:
+1. Finds all .cpp files in cpp_algorithms/
+2. For each one, calls the compiler (g++ or clang)
+3. Compiles with optimizations (-O2 or -O3 depending on config)
+4. Puts executables in cpp_algorithms/bin/
+5. If there's an error, it reports it
+
+Why automate? If I change something in C++, I don't want to manually think
+"I need to recompile". Just run build_cpp.py and done.
+
+Compilation optimizations (-O2, -O3) are important - these are standard
+opportunities that tell the compiler how to optimize. I use these consistently
+to be fair with C++.
+
+
+WHAT DOES BENCHMARK.PY DO?
+==========================
+
+It's the main code. It orchestrates all the tests. The workflow:
+
+1. SYSTEM INFO
+   - Collects information: OS, CPU cores (logical and physical), total RAM, processor
+   - Writes this in the CSV header (as comments)
+   - Why? So anyone reading the results knows what machine they ran on
+
+2. SETUP
+   - Finds all Python algorithms from py_algorithms/
+   - Finds all compiled C++ executables
+   - Creates configurations for each combination (algorithm + language)
+
+3. MAIN LOOP
+   - For each algorithm
+     - For each data size
+       - For each element type
+         - For each distribution
+           - For each structure (array/linked_list)
+             - Generate data
+             - Run algorithm (with 2 min timeout)
+             - Measure performance
+             - Write to CSV
+             - Print status (so I can see in real time what's happening)
+
+4. FINAL
+   - Calculate total statistics
+   - Report: how many tests passed, how many timeouts, success rate
+   - Print total time
+
+Why timeout? Some algorithms (bubble sort on 100 million numbers)
+could run for hours. It's not practical. 2 minutes is reasonable -
+if it doesn't finish in 2 minutes, it's probably not useful for that case.
+
+
+RESOURCE MONITORING
+===================
+
+While each algorithm runs, a separate thread monitors:
+- CPU usage (from psutil)
+- RAM usage (from psutil)
+- Samples this every ~100ms
+
+At the end, I take the average. Why? I want to see not just the peak,
+but how the algorithm behaves over the entire duration.
+
+An algorithm with CPU spikes is different from one that's constantly loaded.
+
+
+FINAL DATA
+==========
+
+The output is a large CSV with all parameters and results.
+
+Each row = one test run
+Columns = all parameters + measured results
+
+I load this into Excel and make pivot tables, charts, etc. for the report.
+
+
+WHY ACTUALLY DIFFERENT IN PYTHON AND C++?
+=========================================
+
+The idea is that I want to see how the same algorithm behaves in different
+environments. I don't want to force C++ to behave like Python or vice versa.
+I want to let them "breathe" in their own way.
+
+In Python, readable and idiomatic code matters more than micro-optimizations.
+In C++, micro-optimizations matter.
+
+That's why Python has linked lists (as an exercise) but C++ doesn't -
+in C++ arrays are clearly superior, in Python it's more interesting.
+
+That's why C++ has Bitonic sort (conceptually parallelizable) but Python doesn't -
+it doesn't make sense in pure Python context (single-threaded).
+
+
+INITIAL EXPECTATIONS
+====================
+
+I expect C++ to be clearly faster for large data.
+I expect some algorithms (quick sort, merge sort) to be much better
+than others (bubble sort) on large data.
+I expect linked lists in Python to be much slower than arrays.
+I expect data distribution (random vs sorted) to affect some algorithms
+much more than others (like quick sort with poor pivot selection).
+
+This benchmark should confirm (or refute) these expectations.
+
+---
+
+This is the thinking behind the code. The implementations put this
+into practice systematically, and the benchmark collects data so I can
+analyze whether my hypotheses were correct.
